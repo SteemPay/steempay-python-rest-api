@@ -18,7 +18,6 @@ def get_steem_account(username):
 def stream_account_history(username, limit=None):
     username = normalize(username)
 
-    steem_client = Steem()
     steem_account = account.Account(username)
 
     if limit is not None:
