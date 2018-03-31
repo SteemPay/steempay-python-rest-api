@@ -12,19 +12,24 @@ steem_rest = Blueprint('Steem', __name__)
 @steem_rest.route("/<username>")
 def get_user(username):
     account = get_steem_account(username)
+
     try:
         metadata = json.loads(account["json_metadata"])
     except:
         metadata = {"profile": {"profile_image": "", "location": ""}}
 
     # print(account)
-
-    output = {
-        "balance_sbd": account["sbd_balance"],
-        "balance_steem": account["balance"],
-        "avatar": metadata["profile"]["profile_image"],
-        "location": metadata["profile"]["location"],
-    }
+    if account is not None:
+        output = {
+            "balance_sbd": account["sbd_balance"],
+            "balance_steem": account["balance"],
+            "avatar": metadata["profile"]["profile_image"],
+            "location": metadata["profile"]["location"],
+        }
+    else:
+        output = {
+            "Unknown user": username
+        }
 
     response = jsonify(output)
     response.headers.add('Access-Control-Allow-Origin', '*')
