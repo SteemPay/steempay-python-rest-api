@@ -28,7 +28,7 @@ def get_user(username):
         }
     else:
         output = {
-            "Unknown user": username
+            "unknown_user": username
         }
 
     response = jsonify(output)
