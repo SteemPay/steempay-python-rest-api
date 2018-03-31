@@ -6,7 +6,6 @@ import json
 
 from helpers import get_steem_account, get_account_history
 
-
 steem_rest = Blueprint('Steem', __name__)
 
 
@@ -27,7 +26,9 @@ def get_user(username):
         "location": metadata["profile"]["location"],
     }
 
-    return jsonify(output)
+    response = jsonify(output)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @steem_rest.route("/<username>/history", defaults={'limit': 30})
@@ -35,7 +36,9 @@ def get_user(username):
 def get_transaction_history(username, limit):
     history = get_account_history(username)
 
-    return jsonify(history)
+    response = jsonify(history)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @steem_rest.route("/<username>/value/")
@@ -74,7 +77,9 @@ def get_account_values(username):
         }
     }
 
-    return jsonify(output)
+    response = jsonify(output)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @steem_rest.route("/<username>/attribute/<attribute>")
@@ -82,6 +87,10 @@ def get_user_attribute(username, attribute):
     account = get_steem_account(username)
 
     if attribute in account.keys():
-        return jsonify(account[attribute])
+        response = jsonify(account[attribute])
     else:
-        return jsonify({})
+        response = jsonify({})
+
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response

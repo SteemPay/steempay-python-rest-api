@@ -2,11 +2,13 @@ appdirs
 certifi
 chardet
 click
+Cython
 dateparser
 diff-match-patch
 ecdsa
 Flask
 Flask-Script
+flask-socketio
 funcy==1.8
 humanize
 idna
@@ -19,6 +21,7 @@ pendulum
 prettytable
 pycrypto
 pylibscrypt
+pymarketcap
 pymongo
 python-dateutil
 pytz
