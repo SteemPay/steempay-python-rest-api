@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from steem import Steem, account
 
 
@@ -15,25 +17,38 @@ def get_steem_account(username):
     return account
 
 
-def stream_account_history(username, limit=None):
-    username = normalize(username)
-
+def stream_account_history(username):
     steem_account = account.Account(username)
-
-    if limit is not None:
-        history = steem_account.history_reverse(batch_size=limit)
-    else:
-        history = steem_account.history_reverse()
+    history = steem_account.history_reverse()
 
     for item in history:
         if item["type"] == "transfer":
             yield item
 
 
-def get_account_history(username, limit=None):
+def stream_account_history_slow(username, since_date=None):
+    from beem import account
+    username = normalize(username)
+    fmt = "%Y-%m-%dT%H:%M:%S"
+    steem_account = account.Account(username)
+
+    since_date = datetime.now() - timedelta(days=120)
+    started = datetime.now()
+    print(f"started at {started}")
+    history = steem_account.history(start=since_date)
+
+    for item in history:
+        if item["type"] == "transfer":
+            yield item
+
+    print(f"Ended at {datetime.now()}\n {datetime.now() - started}")
+
+
+def get_account_history(username):
     output = []
 
-    for item in stream_account_history(username, limit):
-        output.append(item)
+    for item in stream_account_history(username):
+        if item not in output:
+            output.append(item)
 
     return output

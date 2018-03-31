@@ -20,6 +20,11 @@ thread_lock = Lock()
 NAMESPACE = '/history'
 
 
+@app.route("/favicon.ico")
+def favicon():
+    return "", 204
+
+
 def background_thread():
     """Example of how to send server generated events to clients."""
     count = 0

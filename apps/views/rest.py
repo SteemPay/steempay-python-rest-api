@@ -1,5 +1,8 @@
+from datetime import timedelta, datetime
+
 from flask import Blueprint, jsonify
 from pymarketcap import Pymarketcap
+import json
 
 from helpers import get_steem_account, get_account_history
 
@@ -10,13 +13,27 @@ steem_rest = Blueprint('Steem', __name__)
 @steem_rest.route("/<username>")
 def get_user(username):
     account = get_steem_account(username)
+    try:
+        metadata = json.loads(account["json_metadata"])
+    except:
+        metadata = {"profile": {"profile_image": "", "location": ""}}
 
-    return jsonify(account)
+    # print(account)
+
+    output = {
+        "balance_sbd": account["sbd_balance"],
+        "balance_steem": account["balance"],
+        "avatar": metadata["profile"]["profile_image"],
+        "location": metadata["profile"]["location"],
+    }
+
+    return jsonify(output)
 
 
-@steem_rest.route("/<username>/history/<limit>")
+@steem_rest.route("/<username>/history", defaults={'limit': 30})
+# @steem_rest.route("/<username>/history/<limit>")
 def get_transaction_history(username, limit):
-    history = get_account_history(username, limit)
+    history = get_account_history(username)
 
     return jsonify(history)
 
@@ -58,13 +75,6 @@ def get_account_values(username):
     }
 
     return jsonify(output)
-
-
-@steem_rest.route("/<username>/history")
-def get_transaction_history_all(username):
-    history = get_account_history(username)
-
-    return jsonify(history)
 
 
 @steem_rest.route("/<username>/attribute/<attribute>")
