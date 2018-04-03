@@ -46,7 +46,7 @@ def get_transaction_history(username, limit):
     return response
 
 
-@steem_rest.route("/<username>/value/")
+@steem_rest.route("/<username>/value")
 def get_account_values(username):
     market = Pymarketcap()
     account = get_steem_account(username)
